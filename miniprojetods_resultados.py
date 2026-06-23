@@ -1,3 +1,12 @@
+# ====================================================================================
+# ====================================================================================
+# ================== CRIAÇÃO DO APLICATIVO DO STREAMLIT ==============================
+# ====================================================================================
+# ====================================================================================
+
+# Importar Variáveis de Arquivo Python
+import miniprojetods_tratamento
+
 # Importar Bibliotecas do Python
 import streamlit as st
 import pandas as pd
@@ -115,12 +124,14 @@ with col_trat3:
 st.divider()
 
 # ==========================================
-# 3. ANÁLISES E INSIGHTS (EDA)
+# 3. ANÁLISES
 # ==========================================
-st.header("3. Análise Exploratória e Insights")
+st.header("3. Análise de Dados e Insights")
 st.write("Abaixo estão destacados os insights mais cruciais obtidos em cada um dos tópicos de análise:")
 
-# --- TÓPICO 1: Tempo de Estudo vs Notas ---
+# Análise de Dinâmica de Estilo de Vida e Tempo
+
+
 st.subheader("🕒 Tópico 1: Impacto do Tempo de Estudo (`studytime`)")
 col_t1_txt, col_t1_graf = st.columns([1, 1])
 with col_t1_txt:
