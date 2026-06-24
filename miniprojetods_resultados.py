@@ -1315,46 +1315,181 @@ st.divider()
 # ==========================================
 # 4. MACHINE LEARNING (FORMULÁRIO PREDITIVO)
 # ==========================================
-st.header("4. Simulador Preditivo (Machine Learning)")
-st.write("Preencha as características do estudante abaixo para que o modelo faça a previsão da nota final.")
+st.header("4. Modelo Preditivo (Machine Learning)")
+st.write("Utilizar um algoritmo de regressão para aprender sobre as variáveis e seu impacto na quantidade do salário. Depois testar sua eficiência e verificar a quantidade de acertos.")
 
-with st.form(key='form_modelo'):
-    c_form1, c_form2, c_form3 = st.columns(3)
-    
-    with c_form1:
-        idade = st.number_input("Idade do Estudante", min_value=15, max_value=22, value=17)
-        tempo_estudo = st.selectbox("Tempo de Estudo Semanal", ("< 2 horas", "2 a 5 horas", "5 a 10 horas", "> 10 horas"))
-        acesso_internet = st.selectbox("Possui Internet em Casa?", ("Sim", "Não"))
-        
-    with c_form2:
-        reprovacoes = st.selectbox("Histórico de Reprovações Prévias", ("0", "1", "2", "3 ou mais"))
-        faltas = st.number_input("Número de Faltas no Ano", min_value=0, max_value=100, value=4)
-        consumo_alcool = st.slider("Consumo de Álcool Fim de Semana (1-Baixo a 5-Alto)", 1, 5, 2)
-        
-    with c_form3:
-        nota_g1 = st.number_input("Nota do 1º Período (G1: 0 a 20)", min_value=0.0, max_value=20.0, value=12.0)
-        nota_g2 = st.number_input("Nota do 2º Período (G2: 0 a 20)", min_value=0.0, max_value=20.0, value=11.5)
-        
-    botao_prever = st.form_submit_button(label='🔮 Calcular Nota Preditiva Final')
+st.subheader("📃 Formulário de Predição de Média de Notas")
 
-if botao_prever:
-    st.subheader("📋 Resultado do Modelo")
+st.write("""
+    Um formulário em que o usuário pode preencher todas as informações em relação ao estudante, para o modelo prever a média de notas mais provável, de acordo com os estudos desenvolvidos no dataset.
+    """)
+
+# Lista exata das colunas que você forneceu para garantir a ordem no final
+colunas_modelo = [
+    'sex', 'age', 'address', 'famsize', 'Medu', 'Fedu', 'traveltime',
+    'studytime', 'failures', 'schoolsup', 'famsup', 'paid', 'activities',
+    'nursery', 'internet', 'romantic', 'famrel', 'freetime', 'goout',
+    'Dalc', 'Walc', 'health', 'absences', 'Mjob_at_home', 'Mjob_health',
+    'Mjob_other', 'Mjob_services', 'Mjob_teacher', 'Fjob_at_home',
+    'Fjob_health', 'Fjob_other', 'Fjob_services', 'Fjob_teacher',
+    'reason_course', 'reason_home', 'reason_other', 'reason_reputation',
+    'guardian_father', 'guardian_mother', 'guardian_other'
+]
+
+# Iniciando o formulário
+with st.form("form_previsao"):
     
-    # Cálculo simulado (substitua pela predição real do seu modelo integrado)
-    nota_simulada_final = (nota_g1 + nota_g2) / 2 + (consumo_alcool * -0.1) + (faltas * -0.05)
-    nota_simulada_final = min(max(nota_simulada_final, 0.0), 20.0)
+    st.subheader("1. Dados Pessoais")
+    c1, c2, c3 = st.columns(3)
     
-    col_res1, col_res2 = st.columns([1, 2])
-    with col_res1:
-        st.metric(label="Nota Final Prevista (G_Media)", value=f"{nota_simulada_final:.2f} / 20.0")
+    with c1:
+        # Caixas de seleção no lugar de números
+        sexo_str = st.selectbox('Sexo', ['Feminino', 'Masculino'])
+        address_str = st.selectbox('Endereço', ['Urbano', 'Rural'])
+        famsize_str = st.selectbox('Tamanho da Família', ['Até 3 pessoas', 'Mais de 3 pessoas'])
+        age = st.number_input('Idade', min_value=10, max_value=30, value=15)
         
-    with col_res2:
-        if nota_simulada_final >= 16.0:
-            st.success("🎯 Perfil de Desempenho: ALTO RENDIMENTO. O estudante apresenta ótimos indicadores de sucesso.")
-        elif nota_simulada_final >= 12.0:
-            st.info("⚖️ Perfil de Desempenho: RENDIMENTO REGULAR. O estudante está dentro da média esperada.")
-        else:
-            st.error("⚠️ Perfil de Desempenho: BAIXO RENDIMENTO. Recomenda-se atenção especial e acompanhamento de faltas/rotina.")
+    with c2:
+        traveltime = st.number_input('Tempo até a escola (1 a 4)', min_value=1, max_value=4, value=1)
+        studytime = st.number_input('Tempo de Estudo (1 a 4)', min_value=1, max_value=4, value=2)
+        failures = st.number_input('Reprovações passadas', min_value=0, max_value=3, value=0)
+        health = st.number_input('Estado de Saúde (1 a 5)', min_value=1, max_value=5, value=5)
+        
+    with c3:
+        freetime = st.number_input('Tempo livre (1 a 5)', min_value=1, max_value=5, value=3)
+        goout = st.number_input('Saídas com amigos (1 a 5)', min_value=1, max_value=5, value=3)
+        Dalc = st.number_input('Álcool semana (1 a 5)', min_value=1, max_value=5, value=1)
+        Walc = st.number_input('Álcool fds (1 a 5)', min_value=1, max_value=5, value=1)
+        absences = st.number_input('Total de Faltas', min_value=0, value=0)
+
+    st.markdown("---")
+    st.subheader("2. Apoio e Histórico Familiar")
+    
+    opcoes_sn = ['Não', 'Sim'] # Para usar nos selects binários
+    
+    c4, c5, c6 = st.columns(3)
+    
+    with c4:
+        Medu = st.number_input('Nível Educação Mãe (0 a 4)', 0, 4, 2)
+        Fedu = st.number_input('Nível Educação Pai (0 a 4)', 0, 4, 2)
+        famrel = st.number_input('Qualidade Relação Familiar (1 a 5)', 1, 5, 4)
+        
+    with c5:
+        schoolsup_str = st.selectbox('Apoio Educacional Extra?', opcoes_sn)
+        famsup_str = st.selectbox('Apoio Familiar nos Estudos?', opcoes_sn)
+        paid_str = st.selectbox('Aulas Particulares Pagas?', opcoes_sn)
+        activities_str = st.selectbox('Atividades Extracurriculares?', opcoes_sn, index=1)
+        
+    with c6:
+        nursery_str = st.selectbox('Frequentou Creche?', opcoes_sn, index=1)
+        internet_str = st.selectbox('Tem Internet em Casa?', opcoes_sn, index=1)
+        romantic_str = st.selectbox('Em Relacionamento Romântico?', opcoes_sn)
+
+    st.markdown("---")
+    st.subheader("3. Informações Categóricas")
+    c7, c8 = st.columns(2)
+    
+    with c7:
+        mjob_str = st.selectbox('Profissão da Mãe', ['Em casa', 'Saúde', 'Serviços', 'Professora', 'Outros'], index=4)
+        fjob_str = st.selectbox('Profissão do Pai', ['Em casa', 'Saúde', 'Serviços', 'Professor', 'Outros'], index=4)
+
+    with c8:
+        reason_str = st.selectbox('Motivo de escolher a escola', ['Curso', 'Perto de Casa', 'Reputação da Escola', 'Outros'])
+        guardian_str = st.selectbox('Responsável Legal principal', ['Mãe', 'Pai', 'Outros'])
+
+    submit = st.form_submit_button(label="🔮 Fazer Previsão")
+
+# ==========================================
+# LÓGICA DE TRADUÇÃO E PREVISÃO
+# ==========================================
+if submit:
+    # Traduzir Sim/Não para 1 e 0
+    map_sn = {'Sim': 1, 'Não': 0}
+    
+    # Traduzir seleções para as variáveis originais
+    sex = 1 if sexo_str == 'Masculino' else 0 
+    address = 1 if address_str == 'Rural' else 0
+    famsize = 1 if famsize_str == 'Mais de 3 pessoas' else 0
+
+    # Recriar o One-Hot Encoding manualmente para o modelo
+    Mjob_at_home = 1 if mjob_str == 'Em casa' else 0
+    Mjob_health = 1 if mjob_str == 'Saúde' else 0
+    Mjob_services = 1 if mjob_str == 'Serviços' else 0
+    Mjob_teacher = 1 if mjob_str == 'Professora' else 0
+    Mjob_other = 1 if mjob_str == 'Outros' else 0
+
+    Fjob_at_home = 1 if fjob_str == 'Em casa' else 0
+    Fjob_health = 1 if fjob_str == 'Saúde' else 0
+    Fjob_services = 1 if fjob_str == 'Serviços' else 0
+    Fjob_teacher = 1 if fjob_str == 'Professor' else 0
+    Fjob_other = 1 if fjob_str == 'Outros' else 0
+
+    reason_course = 1 if reason_str == 'Curso' else 0
+    reason_home = 1 if reason_str == 'Perto de Casa' else 0
+    reason_reputation = 1 if reason_str == 'Reputação da Escola' else 0
+    reason_other = 1 if reason_str == 'Outros' else 0
+
+    guardian_mother = 1 if guardian_str == 'Mãe' else 0
+    guardian_father = 1 if guardian_str == 'Pai' else 0
+    guardian_other = 1 if guardian_str == 'Outros' else 0
+
+    # Montar o dicionário com todas as 40 colunas traduzidas para números
+    novos_dados = {
+        'sex': [sex], 'age': [age], 'address': [address], 'famsize': [famsize],
+        'Medu': [Medu], 'Fedu': [Fedu], 'traveltime': [traveltime], 'studytime': [studytime],
+        'failures': [failures], 'schoolsup': [map_sn[schoolsup_str]], 'famsup': [map_sn[famsup_str]], 
+        'paid': [map_sn[paid_str]], 'activities': [map_sn[activities_str]], 'nursery': [map_sn[nursery_str]], 
+        'internet': [map_sn[internet_str]], 'romantic': [map_sn[romantic_str]], 'famrel': [famrel], 
+        'freetime': [freetime], 'goout': [goout], 'Dalc': [Dalc], 'Walc': [Walc], 'health': [health], 
+        'absences': [absences], 'Mjob_at_home': [Mjob_at_home], 'Mjob_health': [Mjob_health], 
+        'Mjob_other': [Mjob_other], 'Mjob_services': [Mjob_services], 'Mjob_teacher': [Mjob_teacher], 
+        'Fjob_at_home': [Fjob_at_home], 'Fjob_health': [Fjob_health], 'Fjob_other': [Fjob_other], 
+        'Fjob_services': [Fjob_services], 'Fjob_teacher': [Fjob_teacher], 'reason_course': [reason_course], 
+        'reason_home': [reason_home], 'reason_other': [reason_other], 'reason_reputation': [reason_reputation],
+        'guardian_father': [guardian_father], 'guardian_mother': [guardian_mother], 'guardian_other': [guardian_other]
+    }
+
+    # Criar o DataFrame e ordenar as colunas
+    df_novo = pd.DataFrame(novos_dados)
+    df_novo = df_novo[colunas_modelo]
+
+    try:
+        # Normalizar usando o scaler treinado 
+        # (Descomente a linha abaixo quando for usar o modelo real)
+        novo_escalonado = scaler.transform(df_novo) 
+        
+        # Fazer a previsão
+        previsao = modelo_rf.predict(novo_escalonado)
+        
+        # Para simulação do visual no Streamlit sem o modelo, vou usar um print falso:
+        st.success(f"A média prevista (G_Media) para este aluno é: **{previsao[0]:.2f}**")
+        
+    except Exception as e:
+        st.error(f"Erro ao processar a previsão: {e}")
+
+st.subheader("⭐ Métricas de Avaliação do Modelo")
+
+st.write("""
+    Avaliar a precisão do modelo, verificando se o modelo está sendo capaz de prever as notas, com base nos outros dados.
+    """)
+
+col_t1_graf, col_t1_graf2 = st.columns([1, 1])
+
+with col_t1_graf:
+    with st.container(border=True):
+        st.subheader("Coeficiente de Determinação (R2)")
+        st.write("""
+            O coeficiente de determinação do modelo deu aproximadamente **0.2694**, ou seja o modelo consegue explicar apenas 26,94% da variação das notas.
+            A realidade é que o desempenho estudantil depende de muitos outros fatores que o modelo simplesmente não sabe ou não conseguiu capturar (talvez a qualidade dos professores, o estado emocional do aluno no dia da prova, ou métodos de estudo específicos que não estão mapeados nas colunas).
+        """)
+
+with col_t1_graf2:
+    with st.container(border=True):
+        st.subheader("Erro Quadrático Médio (MSE)")
+        st.write("""
+            O erro quadrático médio do modelo deu aproximadamente **10.82**, ou seja o modelo consegue prever uma determinada média de notas, mas pode errar o valor com uma margem de erro de aproximadamente 3.
+            Essa métrica nos mostra o quão confiável o nosso modelo é, e por ser, de certa forma, um erro quadrático alto, o modelo não deve ser usado como um único parâmetro para realizar alguma decisão.
+        """)
 
 st.divider()
 st.caption("Liga de Data Science Unicamp | Mini Projeto 2026")
