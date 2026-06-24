@@ -676,7 +676,7 @@ _FIG_5.update_layout(
 # Gerar Gráfico de Média de Notas por Profissão
 print('\n--- EXIBIÇÃO DO GRÁFICO DE MÉDIA DE NOTAS POR PROFISSÃO DOS PAIS ---')
 df['average'] = df[['G1', 'G2', 'G3']].mean(axis=1)
-plt.figure(figsize=(8, 5))
+_FIG_6, ax = plt.subplots(figsize=(8, 5))
 
 sns.barplot(data=df, x='Mjob', y='average', hue='Fjob', palette='mako')
 
@@ -729,7 +729,7 @@ plt.title('Matriz de Correlação Média x Escolaridade dos Pais', fontsize=16, 
 
 # Gerar Gráfico de Média de Notas por Educação dos Pais
 print('\n--- EXIBIÇÃO DO GRÁFICO DE MÉDIA DE NOTAS POR ESCOLARIDADE DOS PAIS ---')
-plt.figure(figsize=(8, 5))
+_FIG_7, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=df, x='Medu', y='average', hue='Fedu', palette='rocket')
 
 plt.legend(title='Educação do Pai', bbox_to_anchor=(1.05, 1), loc='upper left')
@@ -790,7 +790,7 @@ plt.tight_layout()
 # =================================== CÉLULA 2.5
 # Gerar Gráfico de Média de Notas por Profissão
 print('\n--- EXIBIÇÃO DO GRÁFICO DE MÉDIA DE NOTAS POR GEOLOCALIZAÇÃO ---')
-plt.figure(figsize=(8, 5))
+_FIG_8, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=df, x='address', y='average', hue='internet', palette='plasma')
 
 plt.legend(title='Possui internet?', bbox_to_anchor=(1.05, 1), loc='upper left')
@@ -803,7 +803,7 @@ plt.ylabel('Média de Notas', fontsize=12, fontweight='bold')
 # Exibir Gráfico de Apoio Educacional x Média de Notas
 print("--- GRÁFICO DE APOIO EDUCACIONAL POR MÉDIA DE NOTAS ---")
 
-plt.figure(figsize=(10, 6))
+_FIG_9, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(data=df, x='schoolsup', y='G_Media', hue='paid', palette='viridis', errorbar=None)
 plt.title('Comparação de Desempenho: Apoio da Escola (Gratuito) vs. Aulas Particulares (Pagas)')
 plt.ylabel('Média das Notas (G1, G2, G3)')
@@ -875,7 +875,7 @@ plt.ylabel('Nota Final')
 
  
 
-plt.figure(figsize=(8,5))
+_FIG_10, ax = plt.subplots(figsize=(8, 5))
 sns.histplot(data=df, x='G3', hue='paid', kde=True, bins=10)
 
 plt.title('Distribuição das Notas Finais por Grupo')
@@ -970,7 +970,7 @@ else:
 
 # =================================== CÉLULA 2.9
 # Remove colunas descartadas e isola correlações numéricas significativas
-plt.figure(figsize=(14, 10))
+_FIG_11, ax = plt.subplots(figsize=(14, 10))
 df_corr_geral = df_encoded.drop(columns=['higher', 'Pstatus', 'school'], errors='ignore')
 
 # Selecionar apenas as top 15 variáveis de maior impacto com a nota para não poluir visualmente o mapa
@@ -1207,56 +1207,110 @@ with col_t1_graf2:
 st.plotly_chart(_FIG_5)
 
 # Análise de Background Familiar e Demográfico
-# st.subheader("👨‍👩‍👧‍👦 Análise de Background Familiar e Demográfico")
+st.subheader("👨‍👩‍👧‍👦 Análise de Background Familiar e Demográfico")
 
-# st.write("""
-#     Analisar os dados da familía do estudante, verificando se o nível de escolaridade, o trabalho e o suporte dado aos filhos, influenciam na performance estudantil.
-#     Pelos gráficos, percebe-se que as notas estão muito variadas e dispersas, tanto para a profissão dos pais, quanto para a escolaridade. Portanto, pode-se assumir que o background familiar tem uma pequena relação com a nota, mas não é um fator decisivo. Inclusive percebe-se que a proporção de dados entre o 'guardian' é muito baixo e não dá para tirar muitas conclusões.
-#     """)
+st.write("""
+    Analisar os dados da familía do estudante, verificando se o nível de escolaridade, o trabalho e o suporte dado aos filhos, influenciam na performance estudantil.
+    Pelos gráficos, percebe-se que as notas estão muito variadas e dispersas, tanto para a profissão dos pais, quanto para a escolaridade. Portanto, pode-se assumir que o background familiar tem uma pequena relação com a nota, mas não é um fator decisivo. Inclusive percebe-se que a proporção de dados entre o 'guardian' é muito baixo e não dá para tirar muitas conclusões.
+    """)
 
-# col_t1_graf, col_t1_graf2 = st.columns([1, 2])
+col_t1_graf, col_t1_graf2, col_t1_graf3 = st.columns([1, 1, 1])
 
-# with col_t1_graf:
-#     st.pyplot(_FIG_6)
+with col_t1_graf:
+    st.pyplot(_FIG_6)
 
-# with col_t1_graf2:
-#     st.pyplot(_FIG_7)
+with col_t1_graf2:
+    st.pyplot(_FIG_7)
 
-# # --- TÓPICO 2: Consumo de Álcool ---
-# st.subheader("🍹 Tópico 2: Consumo de Álcool e Relação Social")
-# col_t2_txt, col_t2_graf = st.columns([1, 1])
-# with col_t2_txt:
-#     st.write("""
-#     A análise de correlação linear revelou que o consumo de álcool (tanto em dias úteis `Dalc` quanto finais de semana `Walc`) é um dos fatores que mais possuem correlação negativa com o tempo de estudo (`studytime`). 
-#     Ou seja, quanto maior o consumo frequente de álcool, menor é a dedicação horária do estudante aos livros.
-#     """)
-# with col_t2_graf:
-#     dados_corr = pd.DataFrame({'Correlação com Tempo de Estudo': [-0.306, -0.253, -0.196]}, index=['Gênero Masculino', 'Álcool (Fim de Semana)', 'Álcool (Dias Úteis)'])
-#     st.bar_chart(dados_corr)
+with col_t1_graf3:
+    st.pyplot(_FIG_8)
 
-# # --- TÓPICO 3: Perfis/Personas ---
-# st.subheader("👥 Tópico 3: Comparativo de Perfis (Personas)")
-# col_alto, col_baixo = st.columns(2)
+# Análise de Eficácia de Suportes Pagos
+st.subheader("💸 Análise de Eficácia de Suportes Pagos")
 
-# with col_alto:
-#     # Contêiner nativo com borda simulando um card
-#     with st.container(border=True):
-#         st.subheader("🟢 Alto Rendimento (Nota Média ≥ 15)")
-#         st.write("- **Média de Faltas:** 4.36 faltas")
-#         st.write("- **Tempo de Estudo:** Alto (Média: 2.20)")
-#         st.write("- **Histórico de Reprovações:** Próximo a zero (0.02)")
-#         st.write("- **Acesso à Internet:** 92.86% possuem")
+st.write("""
+    A variável "paid" foi utilizada para analisar a influência das aulas pagas extras no desempenho acadêmico dos estudantes. Os alunos foram divididos em dois grupos: aqueles que recebem suporte educacional pago e aqueles que não recebem.
+    """)
 
-# with col_baixo:
-#     # Contêiner nativo com borda simulando um card
-#     with st.container(border=True):
-#         st.subheader("🔴 Baixo Rendimento (Nota Média < 10)")
-#         st.write("- **Média de Faltas:** 6.35 faltas")
-#         st.write("- **Tempo de Estudo:** Baixo (Média: 1.93)")
-#         st.write("- **Histórico de Reprovações:** Alto (Média: 0.64)")
-#         st.write("- **Acesso à Internet:** 78.05% possuem")
+col_t1_graf, col_t1_graf2 = st.columns([1, 1])
 
-# st.divider()
+with col_t1_graf:
+    st.pyplot(_FIG_9)
+
+with col_t1_graf2:
+    st.pyplot(_FIG_10)
+
+# Criação de Personas e Análise de Outliers
+col_t1_graf, col_t1_graf2 = st.columns([1, 1])
+
+with col_t1_graf:
+    st.subheader("👤 Criação de Personas")
+
+    st.write("""
+        Criar perfis para identificar quais são as principais características, no geral, de um estudante com alto e baixo rendimento. Essencial para identificar quais são as características que mais influenciam nas notas.
+        """)
+    
+    with st.container(border=True):
+        st.subheader("🟢 Alto Rendimento (Nota Média ≥ 15)")
+        st.write("""
+            - **Tempo de Estudo:** Alto (Média: 2.20)
+            - **Histórico de Reprovações:** Próximo a zero (0.02)
+            - **Média de Faltas:** 4.36 faltas
+            - **Acesso à Internet:** 92.86% possuem
+            - **Tempo Livre:** 3.00 horas
+        """)
+
+    with st.container(border=True):
+        st.subheader("🔴 Baixo Rendimento (Nota Média < 10)")
+        st.write("""
+            - **Tempo de Estudo:** Baixo (Média: 1.93)
+            - **Histórico de Reprovações:** Alto (Média: 0.64)
+            - **Média de Faltas:** 6.35 faltas
+            - **Acesso à Internet:** 78.05% possuem
+            - **Tempo Livre:** 3.00 horas
+        """)
+
+with col_t1_graf2:
+    st.subheader("🧑‍🎓 Alunos Resiliantes")
+
+    st.write("""
+        Verificar quais estudantes possuem notas diferentes, mesmo vivendo e possuindo um contexto semelhante. Encontrar os outliers e identificar padrões entre eles.
+        """)
+    
+    with st.container(border=True):
+        st.subheader("🟢 Resilientes")
+        st.write("""
+            - **Tempo de Estudo:** 1.75 horas
+            - **Histórico de Reprovações:**  0.38
+            - **Média de Faltas:** 3.62 faltas
+            - **Frequência de Saída com Amigos:** Baixa (2.50)
+            - **Tempo Livre:** 3.25 horas
+        """)
+
+    with st.container(border=True):
+        st.subheader("🔴 Vulneráveis")
+        st.write("""
+            - **Tempo de Estudo:** 1.82 horas
+            - **Histórico de Reprovações:**  0.85
+            - **Média de Faltas:** 3.50 faltas
+            - **Frequência de Saída com Amigos:** Moderada (3.00)
+            - **Tempo Livre:** 3.03 horas
+        """)
+
+# Matriz de Correlação das Variáveis
+col_t1_graf, col_t1_graf2 = st.columns([1, 2])
+
+with col_t1_graf:
+    st.subheader("🟪 Matriz de Correlação das Variáveis")
+    st.write("""
+    Exibir a matriz de correlação de todos os dados, para realizar uma última análise e confirmação de todas as análises já feitas. Essa etapa é essencial para validar as variáveis importantes e partir para a próxima etapa do projeto. 
+    A visualização ao lado, mostra as 15 variáveis que mais influenciam nas notas (G1, G2 e G3).
+    """)
+
+with col_t1_graf2:
+    st.pyplot(_FIG_11)
+
+st.divider()
 
 # ==========================================
 # 4. MACHINE LEARNING (FORMULÁRIO PREDITIVO)
@@ -1295,9 +1349,9 @@ if botao_prever:
         st.metric(label="Nota Final Prevista (G_Media)", value=f"{nota_simulada_final:.2f} / 20.0")
         
     with col_res2:
-        if nota_simulada_final >= 15.0:
+        if nota_simulada_final >= 16.0:
             st.success("🎯 Perfil de Desempenho: ALTO RENDIMENTO. O estudante apresenta ótimos indicadores de sucesso.")
-        elif nota_simulada_final >= 10.0:
+        elif nota_simulada_final >= 12.0:
             st.info("⚖️ Perfil de Desempenho: RENDIMENTO REGULAR. O estudante está dentro da média esperada.")
         else:
             st.error("⚠️ Perfil de Desempenho: BAIXO RENDIMENTO. Recomenda-se atenção especial e acompanhamento de faltas/rotina.")
